@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 typedef struct POINT {
@@ -66,63 +67,71 @@ POINT point_from_number(int num) {
   return ret;
 }
 
+// 位置の重複チェック
+int overlap_point_chk(POINT p, POINT* p_points, int points_count) {
+  int i = 0;
+  for (i = 0; i < points_count; i++) {
+    if (p.x == p_points[i].x && p.y == p_points[i].y) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
 // 位置と距離を指定して、周囲の素数の数を調べる
 int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_count) {
-  // 第一象限
-  int x = 0;
-  int y = 0;
-  for (x = diff; x >= 0; x--) {
-    if (p.y+y >= 0) {
-      POINT tmp_point = {p.x+x, p.y+y};
-      int num = number_from_point(tmp_point);
-      if (isPrime(num)) {
-        return 1;
-      }
-    }
-    y--;
-  }
+  int return_count = 0;
 
-  // 第二象限
-  x = 0;
-  y = 0;
-  for (x = diff; x >= 0; x--) {
+  // 周囲を見る
+  int x = diff;
+  int y = -diff;
+  for (y = -diff; y <= diff; y++) {
     POINT tmp_point = {p.x+x, p.y+y};
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
-      return 1;
-    }
-    y++;
-  }
-
-  // 第三象限
-  x = 0;
-  y = 0;
-  for (x = -diff; x <= 0; x++) {
-    if (p.x+x >= 0) {
-      POINT tmp_point = {p.x+x, p.y+y};
-      int num = number_from_point(tmp_point);
-      if (isPrime(num)) {
-        return 1;
+      if (return_count < points_count) {
+        p_points[return_count] = tmp_point;
+        return_count++;
       }
     }
-    y++;
   }
+  y = diff;
 
-  // 第四象限
-  x = 0;
-  y = 0;
-  for (x = -diff; x <= 0; x++) {
-    if (p.x+x >= 0 && p.y+y >= 0) {
-      POINT tmp_point = {p.x+x, p.y+y};
-      int num = number_from_point(tmp_point);
-      if (isPrime(num)) {
-        return 1;
+  for (x = diff; x >= -diff; x--) {
+    POINT tmp_point = {p.x+x, p.y+y};
+    int num = number_from_point(tmp_point);
+    if (isPrime(num)) {
+      if (return_count < points_count) {
+        p_points[return_count] = tmp_point;
+        return_count++;
       }
     }
-    y--;
   }
+  x = -diff;
 
-  return 0;
+  for (y = diff; y >= -diff; y--) {
+    POINT tmp_point = {p.x+x, p.y+y};
+    int num = number_from_point(tmp_point);
+    if (isPrime(num)) {
+      if (return_count < points_count) {
+        p_points[return_count] = tmp_point;
+        return_count++;
+      }
+    }
+  }
+  y = -diff;
+
+  for (x = -diff; x < diff; x++) {
+    POINT tmp_point = {p.x+x, p.y+y};
+    int num = number_from_point(tmp_point);
+    if (isPrime(num)) {
+      if (return_count < points_count) {
+        p_points[return_count] = tmp_point;
+        return_count++;
+      }
+    }
+  }
+  return return_count;
 }
 
 int main() {
@@ -133,19 +142,38 @@ int main() {
   fgets(input_str, sizeof(input_str), stdin);
   int input_num = atoi(input_str);
 
-  int prime_cnt = 0;
-  int primes[4] = {0,0,0,0};
-
   // 数値の位置を求める
   POINT num_point = point_from_number(atoi(input_str));
 
-  int is_prime = around_from_point_and_diff(num_point, 2, points, 0xff);
-
-  if (is_prime) {
-    printf("true");
+  memset(points, 0, sizeof(points));
+  int prime_count = 0;
+  int depth = 1;
+  while (prime_count == 0 && depth < 0xffff) {
+    prime_count = around_from_point_and_diff(num_point, depth, points, 0xff);
+    depth++;
   }
-  else {
-    printf("false");
+
+  printf("test:%d\n", prime_count);
+  int primes[256];
+  int i = 0;
+  for (i = 0; i < prime_count; i++) {
+    primes[i] = number_from_point(points[i]);
+  }
+
+  // 昇順にソート(ふつうのバブルソート)
+  for (i = 0; i < prime_count; i++) {
+    int j = 0;
+    for (j = i; j < prime_count - 1; j++) {
+      if (primes[j] > primes[j + 1]) {
+        int tmp = primes[j];
+        primes[j] = primes[j + 1];
+        primes[j + 1] = tmp;
+      }
+    }
+  }
+
+  for (i = 0; i < prime_count; i++) {
+    printf("%d\n", primes[i]);
   }
 
   /*
@@ -209,7 +237,6 @@ int main() {
     }
   }
   */
-  printf("\n");
 
   return 0;
 }
