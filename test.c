@@ -73,6 +73,9 @@ int main() {
   fgets(input_str, sizeof(input_str), stdin);
   int input_num = atoi(input_str);
 
+  int prime_cnt = 0;
+  int primes[4] = {0,0,0,0};
+
   // 数値の位置を求める
   POINT num_point = point_from_number(atoi(input_str));
 
@@ -80,10 +83,62 @@ int main() {
   if (num_point.x > 0) {
     POINT p = {num_point.x - 1, num_point.y};
     int num = number_from_point(p);
-    printf("%d\n", num);
+    if (isPrime(num)) {
+      primes[prime_cnt] = num;
+      prime_cnt += 1;
+    }
   }
 
+  // 右隣の数値を求める
+  {
+    POINT p = {num_point.x + 1, num_point.y};
+    int num = number_from_point(p);
+    if (isPrime(num)) {
+      primes[prime_cnt] = num;
+      prime_cnt += 1;
+    }
+  }
 
+  // 上にある数値を求める
+  if (num_point.y > 0) {
+    POINT p = {num_point.x, num_point.y - 1};
+    int num = number_from_point(p);
+    if (isPrime(num)) {
+      primes[prime_cnt] = num;
+      prime_cnt += 1;
+    }
+  }
+  
+  // 下にある数値を求める
+  {
+    POINT p = {num_point.x, num_point.y + 1};
+    int num = number_from_point(p);
+    if (isPrime(num)) {
+      primes[prime_cnt] = num;
+      prime_cnt += 1;
+    }
+  }
+  
+  // 昇順にソート(ふつうのバブルソート)
+  int i = 0;
+  for (i = 0; i < prime_cnt; i++) {
+    int j = 0;
+    for (j = i; j < prime_cnt - 1; j++) {
+      if (primes[j] > primes[j + 1]) {
+        int tmp = primes[j];
+        primes[j] = primes[j + 1];
+        primes[j + 1] = tmp;
+      }
+    }
+  }
+  
+  for (i = 0; i < prime_cnt; i++) {
+    printf("%d", primes[i]);
+    if (i < prime_cnt - 1) {
+      printf(",");
+    }
+  }
+  printf("\n");
 /*
   fgets(input_str, sizeof(input_str), stdin);
   int input_num = atoi(input_str);
