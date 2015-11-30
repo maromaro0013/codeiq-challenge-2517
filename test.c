@@ -66,8 +66,68 @@ POINT point_from_number(int num) {
   return ret;
 }
 
+// 位置と距離を指定して、周囲の素数の数を調べる
+int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_count) {
+  // 第一象限
+  int x = 0;
+  int y = 0;
+  for (x = diff; x >= 0; x--) {
+    if (p.y+y >= 0) {
+      POINT tmp_point = {p.x+x, p.y+y};
+      int num = number_from_point(tmp_point);
+      if (isPrime(num)) {
+        return 1;
+      }
+    }
+    y--;
+  }
+
+  // 第二象限
+  x = 0;
+  y = 0;
+  for (x = diff; x >= 0; x--) {
+    POINT tmp_point = {p.x+x, p.y+y};
+    int num = number_from_point(tmp_point);
+    if (isPrime(num)) {
+      return 1;
+    }
+    y++;
+  }
+
+  // 第三象限
+  x = 0;
+  y = 0;
+  for (x = -diff; x <= 0; x++) {
+    if (p.x+x >= 0) {
+      POINT tmp_point = {p.x+x, p.y+y};
+      int num = number_from_point(tmp_point);
+      if (isPrime(num)) {
+        return 1;
+      }
+    }
+    y++;
+  }
+
+  // 第四象限
+  x = 0;
+  y = 0;
+  for (x = -diff; x <= 0; x++) {
+    if (p.x+x >= 0 && p.y+y >= 0) {
+      POINT tmp_point = {p.x+x, p.y+y};
+      int num = number_from_point(tmp_point);
+      if (isPrime(num)) {
+        return 1;
+      }
+    }
+    y--;
+  }
+
+  return 0;
+}
+
 int main() {
   char input_str[256];
+  POINT points[0xff];
 
   // 数値の入力を受け取る
   fgets(input_str, sizeof(input_str), stdin);
@@ -79,6 +139,16 @@ int main() {
   // 数値の位置を求める
   POINT num_point = point_from_number(atoi(input_str));
 
+  int is_prime = around_from_point_and_diff(num_point, 2, points, 0xff);
+
+  if (is_prime) {
+    printf("true");
+  }
+  else {
+    printf("false");
+  }
+
+  /*
   // 左隣の数値を求める
   if (num_point.x > 0) {
     POINT p = {num_point.x - 1, num_point.y};
@@ -138,25 +208,8 @@ int main() {
       printf(",");
     }
   }
+  */
   printf("\n");
-/*
-  fgets(input_str, sizeof(input_str), stdin);
-  int input_num = atoi(input_str);
-*/
 
-/*
-  POINT num_point = point_from_number(atoi(input_str));
-  printf("%d,%d\n", num_point.x, num_point.y);
-*/
-/*
-  fgets(input_str, sizeof(input_str), stdin);
-  int x = atoi(input_str);
-  fgets(input_str, sizeof(input_str), stdin);
-  int y = atoi(input_str);
-
-  POINT test = {x, y};
-  int num = number_from_point(test);
-  printf("%d\n", num);
-*/
   return 0;
 }
