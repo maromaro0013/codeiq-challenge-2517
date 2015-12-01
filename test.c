@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <float.h>
 #include <math.h>
 
 typedef struct POINT {
@@ -81,6 +82,8 @@ int overlap_point_chk(POINT p, POINT* p_points, int points_count) {
 // 位置と距離を指定して、周囲の素数の数を調べる
 int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_count) {
   int return_count = 0;
+  double min_length = DBL_MAX;
+  double length = 0.0;
 
   // 周囲を見る
   int x = diff;
@@ -89,9 +92,17 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
     POINT tmp_point = {p.x+x, p.y+y};
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
-      if (return_count < points_count) {
-        p_points[return_count] = tmp_point;
-        return_count++;
+      length = sqrt(pow(x, 2) + pow(y, 2));
+      if (length <= min_length && return_count < points_count) {
+        if (fabs(length - min_length) < 0.000001) {
+          p_points[return_count] = tmp_point;
+          return_count++;
+        }
+        else if (length < min_length) {
+          p_points[0] = tmp_point;
+          return_count = 1;
+          min_length = length;
+        }
       }
     }
   }
@@ -101,9 +112,17 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
     POINT tmp_point = {p.x+x, p.y+y};
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
-      if (return_count < points_count) {
-        p_points[return_count] = tmp_point;
-        return_count++;
+      length = sqrt(pow(x, 2) + pow(y, 2));
+      if (length <= min_length && return_count < points_count) {
+        if (fabs(length - min_length) < 0.000001) {
+          p_points[return_count] = tmp_point;
+          return_count++;
+        }
+        else if (length < min_length) {
+          p_points[0] = tmp_point;
+          return_count = 1;
+          min_length = length;
+        }
       }
     }
   }
@@ -113,9 +132,17 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
     POINT tmp_point = {p.x+x, p.y+y};
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
-      if (return_count < points_count) {
-        p_points[return_count] = tmp_point;
-        return_count++;
+      length = sqrt(pow(x, 2) + pow(y, 2));
+      if (length <= min_length && return_count < points_count) {
+        if (fabs(length - min_length) < 0.000001) {
+          p_points[return_count] = tmp_point;
+          return_count++;
+        }
+        else if (length < min_length) {
+          p_points[0] = tmp_point;
+          return_count = 1;
+          min_length = length;
+        }
       }
     }
   }
@@ -125,9 +152,17 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
     POINT tmp_point = {p.x+x, p.y+y};
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
-      if (return_count < points_count) {
-        p_points[return_count] = tmp_point;
-        return_count++;
+      length = sqrt(pow(x, 2) + pow(y, 2));
+      if (length <= min_length && return_count < points_count) {
+        if (fabs(length - min_length) < 0.000001) {
+          p_points[return_count] = tmp_point;
+          return_count++;
+        }
+        else if (length < min_length) {
+          p_points[0] = tmp_point;
+          return_count = 1;
+          min_length = length;
+        }
       }
     }
   }
@@ -153,7 +188,7 @@ int main() {
     depth++;
   }
 
-  printf("test:%d\n", prime_count);
+  //printf("prime_count:%d\n", prime_count);
   int primes[256];
   int i = 0;
   for (i = 0; i < prime_count; i++) {
@@ -161,9 +196,9 @@ int main() {
   }
 
   // 昇順にソート(ふつうのバブルソート)
-  for (i = 0; i < prime_count; i++) {
+  for (i = 0; i < prime_count - 1; i++) {
     int j = 0;
-    for (j = i; j < prime_count - 1; j++) {
+    for (j = 0; j < prime_count - 1 - i; j++) {
       if (primes[j] > primes[j + 1]) {
         int tmp = primes[j];
         primes[j] = primes[j + 1];
@@ -173,70 +208,12 @@ int main() {
   }
 
   for (i = 0; i < prime_count; i++) {
-    printf("%d\n", primes[i]);
-  }
-
-  /*
-  // 左隣の数値を求める
-  if (num_point.x > 0) {
-    POINT p = {num_point.x - 1, num_point.y};
-    int num = number_from_point(p);
-    if (isPrime(num)) {
-      primes[prime_cnt] = num;
-      prime_cnt += 1;
-    }
-  }
-
-  // 右隣の数値を求める
-  {
-    POINT p = {num_point.x + 1, num_point.y};
-    int num = number_from_point(p);
-    if (isPrime(num)) {
-      primes[prime_cnt] = num;
-      prime_cnt += 1;
-    }
-  }
-
-  // 上にある数値を求める
-  if (num_point.y > 0) {
-    POINT p = {num_point.x, num_point.y - 1};
-    int num = number_from_point(p);
-    if (isPrime(num)) {
-      primes[prime_cnt] = num;
-      prime_cnt += 1;
-    }
-  }
-  
-  // 下にある数値を求める
-  {
-    POINT p = {num_point.x, num_point.y + 1};
-    int num = number_from_point(p);
-    if (isPrime(num)) {
-      primes[prime_cnt] = num;
-      prime_cnt += 1;
-    }
-  }
-  
-  // 昇順にソート(ふつうのバブルソート)
-  int i = 0;
-  for (i = 0; i < prime_cnt; i++) {
-    int j = 0;
-    for (j = i; j < prime_cnt - 1; j++) {
-      if (primes[j] > primes[j + 1]) {
-        int tmp = primes[j];
-        primes[j] = primes[j + 1];
-        primes[j + 1] = tmp;
-      }
-    }
-  }
-  
-  for (i = 0; i < prime_cnt; i++) {
     printf("%d", primes[i]);
-    if (i < prime_cnt - 1) {
+    if (i < prime_count - 1) {
       printf(",");
     }
   }
-  */
+  printf("\n");
 
   return 0;
 }
