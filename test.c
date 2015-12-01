@@ -88,7 +88,7 @@ int overlap_point_chk(POINT p, POINT* p_points, int points_count) {
 }
 
 // 位置と距離を指定して、周囲の素数の数を調べる
-int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_count) {
+int around_from_point_and_diff(POINT p, int depth, POINT* p_points, int points_count) {
   int return_count = 0;
   double min_length = DBL_MAX;
   double length = 0.0;
@@ -96,17 +96,19 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
   // 第一象限
   int x = 0;
   int y = 0;
-  for (x = diff; x >= 0; x--) {
+  for (x = depth; x >= 0; x--) {
     if (p.y+y >= 0) {
       POINT tmp_point = {p.x+x, p.y+y};
       int num = number_from_point(tmp_point);
       if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
         length = sqrt(pow(x, 2) + pow(y, 2));
         if (fabs(length - min_length) < 0.00000001) {
+          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
+          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -119,16 +121,18 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
   // 第二象限
   x = 0;
   y = 0;
-  for (x = diff; x >= 0; x--) {
+  for (x = depth; x >= 0; x--) {
     POINT tmp_point = {p.x+x, p.y+y};
     int num = number_from_point(tmp_point);
     if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (fabs(length - min_length) < 0.00000001) {
+        printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
         p_points[return_count] = tmp_point;
         return_count++;
       }
       else if (length < min_length) {
+         printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
         p_points[0] = tmp_point;
         return_count = 1;
         min_length = length;
@@ -140,17 +144,19 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
   // 第三象限
   x = 0;
   y = 0;
-  for (x = -diff; x <= 0; x++) {
+  for (x = -depth; x <= 0; x++) {
     if (p.x+x >= 0) {
       POINT tmp_point = {p.x+x, p.y+y};
       int num = number_from_point(tmp_point);
       if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
         length = sqrt(pow(x, 2) + pow(y, 2));
         if (fabs(length - min_length) < 0.00000001) {
+          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
+          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -163,17 +169,19 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
   // 第四象限
   x = 0;
   y = 0;
-  for (x = -diff; x <= 0; x++) {
+  for (x = -depth; x <= 0; x++) {
     if (p.x+x >= 0 && p.y+y >= 0) {
       POINT tmp_point = {p.x+x, p.y+y};
       int num = number_from_point(tmp_point);
       if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
         length = sqrt(pow(x, 2) + pow(y, 2));
         if (fabs(length - min_length) < 0.00000001) {
+          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
+          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -315,13 +323,13 @@ int main() {
 
   memset(points, 0, sizeof(points));
   int prime_count = 0;
-  int depth = 1;
+  int depth = 6;
   while (prime_count == 0 && depth < 0xffff) {
     prime_count = around_from_point_and_diff(num_point, depth, points, 0xff);
     depth++;
   }
 
-  //printf("depth:%d\n", depth);
+  printf("depth:%d\n", depth - 1);
   //printf("prime_count:%d\n", prime_count);
   int primes[256];
   int i = 0;
