@@ -103,6 +103,7 @@ int around_from_point_and_diff(POINT p, int depth, POINT* p_points, int points_c
         }
         else if (length < min_length) {
           //printf("num:%d(%f)(%d:%d)\n", num, length, p.x+x, p.y+y);
+          //printf("num:%d(%f)(%d:%d)\n", num, length, p.x+x, p.y+y);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -127,7 +128,7 @@ int main() {
 
   memset(points, 0, sizeof(points));
   int prime_count = 0;
-  int depth = 100;
+  int depth = 16;
   while (prime_count == 0 && depth < 0xffff) {
     prime_count = around_from_point_and_diff(num_point, depth, points, 0xff);
     if (prime_count <= 0) {
