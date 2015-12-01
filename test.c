@@ -106,11 +106,13 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
     if (isPrime(num)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (length <= min_length && return_count < points_count) {
-        if (fabs(length - min_length) < 0.000001) {
+        if (fabs(length - min_length) < 0.00000001) {
+          //printf("num0:%d\n", num);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
+          //printf("min_num:0%d\n", num);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -118,9 +120,11 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
       }
     }
   }
+
+  x = diff - 1;
   y = diff;
 
-  for (x = diff; x >= -diff; x--) {
+  for (x = x; x >= -diff + 1; x--) {
     POINT tmp_point = {p.x+x, p.y+y};
     if (!isEnablePoint(tmp_point)) {
       continue;
@@ -130,11 +134,13 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
     if (isPrime(num)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (length <= min_length && return_count < points_count) {
-        if (fabs(length - min_length) < 0.000001) {
+        if (fabs(length - min_length) < 0.00000001) {
+          //printf("num1:%d\n", num);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
+          //printf("min_num1:%d\n", num);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -142,9 +148,11 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
       }
     }
   }
+  
   x = -diff;
+  y = diff - 1;
 
-  for (y = diff; y >= -diff; y--) {
+  for (y = y; y >= -diff; y--) {
     POINT tmp_point = {p.x+x, p.y+y};
     if (!isEnablePoint(tmp_point)) {
       continue;
@@ -154,11 +162,13 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
     if (isPrime(num)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (length <= min_length && return_count < points_count) {
-        if (fabs(length - min_length) < 0.000001) {
+        if (fabs(length - min_length) < 0.00000001) {
+          //printf("num2:%d\n", num);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
+          //printf("min_num2:%d\n", num);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -166,9 +176,11 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
       }
     }
   }
+  
+  x = -diff + 1;
   y = -diff;
 
-  for (x = -diff; x < diff; x++) {
+  for (x = x; x < diff; x++) {
     POINT tmp_point = {p.x+x, p.y+y};
     if (!isEnablePoint(tmp_point)) {
       continue;
@@ -178,11 +190,13 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
     if (isPrime(num)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (length <= min_length && return_count < points_count) {
-        if (fabs(length - min_length) < 0.000001) {
+        if (fabs(length - min_length) < 0.00000001) {
+          //printf("num3:%d\n", num);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
+          //printf("min_num3:%d\n", num);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -212,6 +226,7 @@ int main() {
     depth++;
   }
 
+  //printf("depth:%d\n", depth);
   //printf("prime_count:%d\n", prime_count);
   int primes[256];
   int i = 0;
