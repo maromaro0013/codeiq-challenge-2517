@@ -76,201 +76,33 @@ POINT point_from_number(int num) {
   return ret;
 }
 
-// 位置の重複チェック
-int overlap_point_chk(POINT p, POINT* p_points, int points_count) {
-  int i = 0;
-  for (i = 0; i < points_count; i++) {
-    if (p.x == p_points[i].x && p.y == p_points[i].y) {
-      return 1;
-    }
-  }
-  return 0;
-}
-
-// 位置と距離を指定して、周囲の素数の数を調べる
+// 位置と深さを指定して、周囲の素数の数を調べる
 int around_from_point_and_diff(POINT p, int depth, POINT* p_points, int points_count) {
   int return_count = 0;
   double min_length = DBL_MAX;
   double length = 0.0;
   
-  // 第一象限
-  int x = 0;
-  int y = 0;
-  for (x = depth; x >= 0; x--) {
-    if (p.y+y >= 0) {
-      POINT tmp_point = {p.x+x, p.y+y};
-      int num = number_from_point(tmp_point);
-      if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
-        length = sqrt(pow(x, 2) + pow(y, 2));
-        if (fabs(length - min_length) < 0.00000001) {
-          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
-          p_points[return_count] = tmp_point;
-          return_count++;
-        }
-        else if (length < min_length) {
-          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
-          p_points[0] = tmp_point;
-          return_count = 1;
-          min_length = length;
-        }
-      }
-    }
-    y--;
-  }
-
-  // 第二象限
-  x = 0;
-  y = 0;
-  for (x = depth; x >= 0; x--) {
-    POINT tmp_point = {p.x+x, p.y+y};
-    int num = number_from_point(tmp_point);
-    if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
-      length = sqrt(pow(x, 2) + pow(y, 2));
-      if (fabs(length - min_length) < 0.00000001) {
-        printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
-        p_points[return_count] = tmp_point;
-        return_count++;
-      }
-      else if (length < min_length) {
-         printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
-        p_points[0] = tmp_point;
-        return_count = 1;
-        min_length = length;
-      }
-    }
-    y++;
-  }
-
-  // 第三象限
-  x = 0;
-  y = 0;
-  for (x = -depth; x <= 0; x++) {
-    if (p.x+x >= 0) {
-      POINT tmp_point = {p.x+x, p.y+y};
-      int num = number_from_point(tmp_point);
-      if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
-        length = sqrt(pow(x, 2) + pow(y, 2));
-        if (fabs(length - min_length) < 0.00000001) {
-          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
-          p_points[return_count] = tmp_point;
-          return_count++;
-        }
-        else if (length < min_length) {
-          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
-          p_points[0] = tmp_point;
-          return_count = 1;
-          min_length = length;
-        }
-      }
-    }
-    y++;
-  }
-
-  // 第四象限
-  x = 0;
-  y = 0;
-  for (x = -depth; x <= 0; x++) {
-    if (p.x+x >= 0 && p.y+y >= 0) {
-      POINT tmp_point = {p.x+x, p.y+y};
-      int num = number_from_point(tmp_point);
-      if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
-        length = sqrt(pow(x, 2) + pow(y, 2));
-        if (fabs(length - min_length) < 0.00000001) {
-          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
-          p_points[return_count] = tmp_point;
-          return_count++;
-        }
-        else if (length < min_length) {
-          printf("num:%d(%f)(%d:%d)\n", num, length, x, y);
-          p_points[0] = tmp_point;
-          return_count = 1;
-          min_length = length;
-        }
-      }
-    }
-    y--;
-  }
-
-  /*
-  double min_length = DBL_MAX;
-  double length = 0.0;
-
-  // 周囲を見る
-  int x = diff;
-  int y = -diff;
-  for (y = -diff; y <= diff; y++) {
-    POINT tmp_point = {p.x+x, p.y+y};
-    if (!isEnablePoint(tmp_point)) {
-      continue;
-    }
-
-    int num = number_from_point(tmp_point);
-    if (isPrime(num)) {
-      length = sqrt(pow(x, 2) + pow(y, 2));
-      if (length <= min_length && return_count < points_count) {
-        if (fabs(length - min_length) < 0.00000001) {
-          printf("num0:%d(%f)\n", num, length);
-          p_points[return_count] = tmp_point;
-          return_count++;
-        }
-        else if (length < min_length) {
-          printf("min_num:0%d(%f)\n", num, length);
-          p_points[0] = tmp_point;
-          return_count = 1;
-          min_length = length;
-        }
-      }
-    }
-  }
-
-  x = diff - 1;
-  y = diff;
-
-  for (x = x; x >= -diff + 1; x--) {
-    POINT tmp_point = {p.x+x, p.y+y};
-    if (!isEnablePoint(tmp_point)) {
-      continue;
-    }
-
-    int num = number_from_point(tmp_point);
-    if (isPrime(num)) {
-      length = sqrt(pow(x, 2) + pow(y, 2));
-      if (length <= min_length && return_count < points_count) {
-        if (fabs(length - min_length) < 0.00000001) {
-          printf("num1:%d(%f)\n", num, length);
-          p_points[return_count] = tmp_point;
-          return_count++;
-        }
-        else if (length < min_length) {
-          printf("min_num1:%d(%f)\n", num, length);
-          p_points[0] = tmp_point;
-          return_count = 1;
-          min_length = length;
-        }
-      }
-    }
-  }
+  // 四方を総当たりで見る頭の悪い方法
+  int x = -depth;
+  int y = -depth;
   
-  x = -diff;
-  y = diff - 1;
-
-  for (y = y; y >= -diff; y--) {
-    POINT tmp_point = {p.x+x, p.y+y};
-    if (!isEnablePoint(tmp_point)) {
-      continue;
-    }
-
-    int num = number_from_point(tmp_point);
-    if (isPrime(num)) {
+  for (x = -depth; x <= depth; x++) {
+    for (y = -depth; y <= depth; y++) {
+      if (p.x+x < 0 || p.y+y < 0) {
+        continue;
+      }
+      POINT tmp_point = {p.x+x, p.y+y};
+      int num = number_from_point(tmp_point);
       length = sqrt(pow(x, 2) + pow(y, 2));
-      if (length <= min_length && return_count < points_count) {
+      if (isPrime(num)) {
         if (fabs(length - min_length) < 0.00000001) {
-          printf("num2:%d(%f)\n", num, length);
+          //printf("num:%d(%f)(%d:%d)\n", num, length, p.x+x, p.y+y);
+          //printf("num:%d\n", return_count);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
-          printf("min_num2:%d(%f)\n", num, length);
+          //printf("num:%d(%f)(%d:%d)\n", num, length, p.x+x, p.y+y);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -278,35 +110,7 @@ int around_from_point_and_diff(POINT p, int depth, POINT* p_points, int points_c
       }
     }
   }
-  
-  x = -diff + 1;
-  y = -diff;
 
-  for (x = x; x < diff; x++) {
-    POINT tmp_point = {p.x+x, p.y+y};
-    if (!isEnablePoint(tmp_point)) {
-      continue;
-    }
-
-    int num = number_from_point(tmp_point);
-    if (isPrime(num)) {
-      length = sqrt(pow(x, 2) + pow(y, 2));
-      if (length <= min_length && return_count < points_count) {
-        if (fabs(length - min_length) < 0.00000001) {
-          printf("num3:%d\n", num);
-          p_points[return_count] = tmp_point;
-          return_count++;
-        }
-        else if (length < min_length) {
-          printf("min_num3:%d\n", num);
-          p_points[0] = tmp_point;
-          return_count = 1;
-          min_length = length;
-        }
-      }
-    }
-  }
-  */
   return return_count;
 }
 
@@ -323,13 +127,15 @@ int main() {
 
   memset(points, 0, sizeof(points));
   int prime_count = 0;
-  int depth = 6;
+  int depth = 100;
   while (prime_count == 0 && depth < 0xffff) {
     prime_count = around_from_point_and_diff(num_point, depth, points, 0xff);
-    depth++;
+    if (prime_count <= 0) {
+      depth *= 10;
+    }
   }
 
-  printf("depth:%d\n", depth - 1);
+  //printf("depth:%d\n", depth);
   //printf("prime_count:%d\n", prime_count);
   int primes[256];
   int i = 0;
