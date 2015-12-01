@@ -92,6 +92,100 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
   int return_count = 0;
   double min_length = DBL_MAX;
   double length = 0.0;
+  
+  // 第一象限
+  int x = 0;
+  int y = 0;
+  for (x = diff; x >= 0; x--) {
+    if (p.y+y >= 0) {
+      POINT tmp_point = {p.x+x, p.y+y};
+      int num = number_from_point(tmp_point);
+      if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
+        length = sqrt(pow(x, 2) + pow(y, 2));
+        if (fabs(length - min_length) < 0.00000001) {
+          p_points[return_count] = tmp_point;
+          return_count++;
+        }
+        else if (length < min_length) {
+          p_points[0] = tmp_point;
+          return_count = 1;
+          min_length = length;
+        }
+      }
+    }
+    y--;
+  }
+
+  // 第二象限
+  x = 0;
+  y = 0;
+  for (x = diff; x >= 0; x--) {
+    POINT tmp_point = {p.x+x, p.y+y};
+    int num = number_from_point(tmp_point);
+    if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
+      length = sqrt(pow(x, 2) + pow(y, 2));
+      if (fabs(length - min_length) < 0.00000001) {
+        p_points[return_count] = tmp_point;
+        return_count++;
+      }
+      else if (length < min_length) {
+        p_points[0] = tmp_point;
+        return_count = 1;
+        min_length = length;
+      }
+    }
+    y++;
+  }
+
+  // 第三象限
+  x = 0;
+  y = 0;
+  for (x = -diff; x <= 0; x++) {
+    if (p.x+x >= 0) {
+      POINT tmp_point = {p.x+x, p.y+y};
+      int num = number_from_point(tmp_point);
+      if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
+        length = sqrt(pow(x, 2) + pow(y, 2));
+        if (fabs(length - min_length) < 0.00000001) {
+          p_points[return_count] = tmp_point;
+          return_count++;
+        }
+        else if (length < min_length) {
+          p_points[0] = tmp_point;
+          return_count = 1;
+          min_length = length;
+        }
+      }
+    }
+    y++;
+  }
+
+  // 第四象限
+  x = 0;
+  y = 0;
+  for (x = -diff; x <= 0; x++) {
+    if (p.x+x >= 0 && p.y+y >= 0) {
+      POINT tmp_point = {p.x+x, p.y+y};
+      int num = number_from_point(tmp_point);
+      if (isPrime(num) && !overlap_point_chk(tmp_point, p_points, return_count)) {
+        length = sqrt(pow(x, 2) + pow(y, 2));
+        if (fabs(length - min_length) < 0.00000001) {
+          p_points[return_count] = tmp_point;
+          return_count++;
+        }
+        else if (length < min_length) {
+          p_points[0] = tmp_point;
+          return_count = 1;
+          min_length = length;
+        }
+      }
+    }
+    y--;
+  }
+
+  /*
+  double min_length = DBL_MAX;
+  double length = 0.0;
 
   // 周囲を見る
   int x = diff;
@@ -107,12 +201,12 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (length <= min_length && return_count < points_count) {
         if (fabs(length - min_length) < 0.00000001) {
-          //printf("num0:%d\n", num);
+          printf("num0:%d(%f)\n", num, length);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
-          //printf("min_num:0%d\n", num);
+          printf("min_num:0%d(%f)\n", num, length);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -135,12 +229,12 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (length <= min_length && return_count < points_count) {
         if (fabs(length - min_length) < 0.00000001) {
-          //printf("num1:%d\n", num);
+          printf("num1:%d(%f)\n", num, length);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
-          //printf("min_num1:%d\n", num);
+          printf("min_num1:%d(%f)\n", num, length);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -163,12 +257,12 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (length <= min_length && return_count < points_count) {
         if (fabs(length - min_length) < 0.00000001) {
-          //printf("num2:%d\n", num);
+          printf("num2:%d(%f)\n", num, length);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
-          //printf("min_num2:%d\n", num);
+          printf("min_num2:%d(%f)\n", num, length);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -191,12 +285,12 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
       length = sqrt(pow(x, 2) + pow(y, 2));
       if (length <= min_length && return_count < points_count) {
         if (fabs(length - min_length) < 0.00000001) {
-          //printf("num3:%d\n", num);
+          printf("num3:%d\n", num);
           p_points[return_count] = tmp_point;
           return_count++;
         }
         else if (length < min_length) {
-          //printf("min_num3:%d\n", num);
+          printf("min_num3:%d\n", num);
           p_points[0] = tmp_point;
           return_count = 1;
           min_length = length;
@@ -204,6 +298,7 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
       }
     }
   }
+  */
   return return_count;
 }
 
