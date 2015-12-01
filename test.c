@@ -32,6 +32,14 @@ int isPrime(int num) {
   return 1;
 }
 
+// 有効な位置判定
+int isEnablePoint(POINT p) {
+  if (p.x < 0 || p.y < 0) {
+    return 0;
+  }
+  return 1;
+}
+
 // 指定の位置から数値を求める
 int number_from_point(POINT p) {
   if (p.x == 0 && p.y == 0) {
@@ -90,6 +98,10 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
   int y = -diff;
   for (y = -diff; y <= diff; y++) {
     POINT tmp_point = {p.x+x, p.y+y};
+    if (!isEnablePoint(tmp_point)) {
+      continue;
+    }
+
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
@@ -110,6 +122,10 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
 
   for (x = diff; x >= -diff; x--) {
     POINT tmp_point = {p.x+x, p.y+y};
+    if (!isEnablePoint(tmp_point)) {
+      continue;
+    }
+
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
@@ -130,6 +146,10 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
 
   for (y = diff; y >= -diff; y--) {
     POINT tmp_point = {p.x+x, p.y+y};
+    if (!isEnablePoint(tmp_point)) {
+      continue;
+    }
+
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
@@ -150,6 +170,10 @@ int around_from_point_and_diff(POINT p, int diff, POINT* p_points, int points_co
 
   for (x = -diff; x < diff; x++) {
     POINT tmp_point = {p.x+x, p.y+y};
+    if (!isEnablePoint(tmp_point)) {
+      continue;
+    }
+
     int num = number_from_point(tmp_point);
     if (isPrime(num)) {
       length = sqrt(pow(x, 2) + pow(y, 2));
